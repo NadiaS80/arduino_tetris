@@ -161,7 +161,7 @@ class Game{
   void figure_one_step_right(){
     bool can_go_right = true;
     for (int i = 0; i < 4; i++){
-      if (falling_figure[i][0] >= 10 || big_game_field[falling_figure[i][1]][falling_figure[i][0] + 1] != 'v'){
+      if (falling_figure[i][0] >= 9 || big_game_field[falling_figure[i][1]][falling_figure[i][0] + 1] != 'v'){
           can_go_right = false;
       };
     };
