@@ -1,0 +1,24 @@
+### 09.03.2026
+
+``
+After a hot body wrap, I take a shower, and the idea comes to me to make Tetris. In terms of code logic, it is much more complex than tic-tac-toe. As I had promised myself while finishing tic-tac-toe, before implementation it is necessary to build a logical framework. So. The maximum vertical and horizontal span of a figure is 4 up and 4 down. That means the figure field is 4×4. And in a loop, the figure is updated in the virtual field where there are 'v' for empty cells and 'f' where the figure’s cells are. There are functions for drawing the figure. Each of them goes through the same field and changes it depending on the current figure, which can, for example, be defined in an enum array. And when the figure falls, the virtual big_game_field simply changes. Every second, the loop changes the field, lowering the figure, and since loop() runs 1000 times per second, we measure intervals in an external variable, and at certain intervals we speed up the falling time. Conditionally, something like if (already_figures > 5) { interval_time += 0.1; }. Having the first cell, we draw figures both through RGB and on the virtual field through the XY function. Each figure can have its own symbols for more diverse lighting when the RGB class reads the virtual field. And figures accumulate in the virtual array. Then the status of the array is checked. It is important while writing the code to separate: the functions for falling and moving the current figure, meaning all operations on the moving figure; and all operations on the figures that are already lying in place. In fact, the task of the RGB class is to scan the virtual big_game_field and update it. That is all. The actual game itself happens in the class with the large field, where loops change the field depending on the commands that were read. In the RGB class, it is enough to have an initialization function, a field-reading function, and entertaining animation functions. It is also possible to work with the real-time clock module for reading delays. And instead of a joystick, use buttons, because they are faster to press, especially at speed, and they are also used in the original Tetris.
+``
+
+``
+For now, this is just a sketch at 2:50 a.m. The first thoughts on the project. Actually, according to the plan, I was supposed to make the Body project, a simplified analogue of the tabletop EMO bot that costs $1500. But after tic-tac-toe, I feel like increasing the complexity specifically in game embedded. I do not know whether I will implement this project at all. We will see. For now, this is just a mental sketch.
+``
+
+``
+Twenty minutes after the previous text hahaha.
+In fact, moving figures horizontally is easy, because there are cells, and the figure moves like the cross and the zero did, without overlapping the current coordinates onto the previous ones. And vertically it is just +1 to start_string, conditionally speaking. And for the figure to descend smoothly, the field has to be larger than what is displayed, so that the figure fully enters the virtual field before it appears in the real one. So, when a signal is read from the buttons, we move it right or left. During drawing, in order not to overlap with other figures that are already lying there, in the figure field, when reading, it is possible to do if ... == 'v', then we ignore it and do not draw it. And at the top there should be 4 extra cells: if the field is completely filled and the figure has nowhere to fall, it will understand this when it cannot move down from those four upper non-displayed cells. And if in a row there is not a single 'v', then a function should run, probably one that is constantly checked inside loop(), and it iterates through the rows, changing the char values of the figures row by row and shifting the upper ones downward.
+``
+
+
+---
+
+
+### 13.03.2026
+
+``
+In a couple of days, through the IDE on my phone, whenever I had free time, I implemented the virtual game class for Tetris. Everything except figure rotations. I am genuinely surprised, considering that on my previous tic-tac-toe project I spent a really long time. On the other hand, in that previous project I was working with C++ classes for the first time, working with a matrix for the first time, and with a joystick for the first time. And now there is a clear understanding. But this project has to be another step upward, toward the more complex projects that I set for myself. More specifically, in this project I use a real-time clock module. All that is left is to implement figure rotation, I think I will do it through a separate class for figures, then the RGB class, where there are only 4 functions, namely init(), end_game_animation(), start_game_animation(), and draw_actual_field(). And after that, call the commands in the correct sequence inside loop().
+``
