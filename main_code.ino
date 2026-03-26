@@ -135,10 +135,11 @@ class Game{
   
   // сброс поля, отрисовка нового поля. Возвращает true, если прлисходит смена раунда. возвращаемое знвчение используется в классе RGB для отрисовки анимации смены раунда
   bool start_round(){
-      bool result = false
+      bool result = false;
       if (end_or_not() == END){
         void_big_game_field();
         start_figure();
+        result = true;
       };
       return result;
   };
@@ -401,22 +402,22 @@ class RGB_matrix{
     int start_show_y = 2;
     for (int i = 4; i < 18; i++){
       for (int o = 0; o < 10; o++){
-        if (game.big_game_field[o][i] == 'v'){
-          leds[(start_show_x + o; start_round + i)] = CRGB::Black;
-        } else if (game.big_game_field[o][i] == 's'){
-          leds[(start_show_x + o; start_round + i)] = CRGB::Yellow;
-        } else if (game.big_game_field[o][i] == 't'){
-          leds[(start_show_x + o; start_round + i)] = CRGB::Purple;
-        } else if (game.big_game_field[o][i] == 'g'){
-          leds[(start_show_x + o; start_round + i)] = CRGB::Blue;
-        } else if (game.big_game_field[o][i] == 'l'){
-          leds[(start_show_x + o; start_round + i)] = CRGB::Orange;
-        } else if (game.big_game_field[o][i] == 'z'){
-          leds[(start_show_x + o; start_round + i)] = CRGB::Red;
-        } else if (game.big_game_field[o][i] == 'w'){
-          leds[(start_show_x + o; start_round + i)] = CRGB::Green;
-        } else if (game.big_game_field[o][i] == 'i'){
-          leds[(start_show_x + o; start_round + i)] = CRGB::Aqua;
+        if (game.big_game_field[i][o] == 'v'){
+          leds[XY(start_show_x + o, start_show_y + (i - 4))] = CRGB::Black;
+        } else if (game.big_game_field[i][o] == 's'){
+          leds[XY(start_show_x + o, start_show_y + (i - 4))] = CRGB::Yellow;
+        } else if (game.big_game_field[i][o] == 't'){
+          leds[XY(start_show_x + o, start_show_y + (i - 4))] = CRGB::Purple;
+        } else if (game.big_game_field[i][o] == 'g'){
+          leds[XY(start_show_x + o, start_show_y + (i - 4))] = CRGB::Blue;
+        } else if (game.big_game_field[i][o] == 'l'){
+          leds[XY(start_show_x + o, start_show_y + (i - 4))] = CRGB::Orange;
+        } else if (game.big_game_field[i][o] == 'z'){
+          leds[XY(start_show_x + o, start_show_y + (i - 4))] = CRGB::Red;
+        } else if (game.big_game_field[i][o] == 'w'){
+          leds[XY(start_show_x + o, start_show_y + (i - 4))] = CRGB::Green;
+        } else if (game.big_game_field[i][o] == 'i'){
+          leds[XY(start_show_x + o, start_show_y + (i - 4))] = CRGB::Aqua;
         };
       };
     };
@@ -434,24 +435,22 @@ class RGB_matrix{
     CRGB blinks[256] = {};
     for (int i = 0; i < 256; i++){
         blinks[i] = leds[i];
-      };
     };
-    
+      
     
     auto make_field_black = [&](){
       for (int o = 0; o < 14; o++){
         for (int z = 0; z < 10; z++){
           leds[XY(4 + z, 2 + o)] = CRGB::Black;
+        };
       };
     };
-    
+
     auto make_field_color = [&](){
-      for (int q = 0; q < 256; q++)
-      leds[q] = blinks[q];
+      for (int q = 0; q < 256; q++){
+        leds[q] = blinks[q];
+      };
     };
-    
-    
-    
     
     auto chess_animation = [&](){
       for (int i = 0; i < 10; i++){
@@ -465,11 +464,12 @@ class RGB_matrix{
             leds[XY(4 + i, 2 + o)] = CRGB::White;
           };
         };
-      
-    
+      };
+
+      FastLED.show();
       delay(500);
     
-    for (int i = 0; i < 10; i++){
+      for (int i = 0; i < 10; i++){
         if (i % 2 != 0){
           for (int o = 0; o < 14; o += 2){
             leds[XY(4 + i, 2 + o)] = CRGB::White;
@@ -480,25 +480,55 @@ class RGB_matrix{
             leds[XY(4 + i, 2 + o)] = CRGB::White;
           };
         };
-    };
-    
+      };
+      FastLED.show();
     
     };
     
     for (int l = 0; l < 3; l++){
       make_field_black();
+      FastLED.show();
       delay(250);
       make_field_color();
+      FastLED.show();
       delay(250);
       make_field_black();
+      FastLED.show();
       delay(250);
       make_field_color();
+      FastLED.show();
       delay(250);
-      make_field_black;
+      make_field_black();
+      FastLED.show();
       delay(250);
       chess_animation();
+      FastLED.show();
       delay(300);
-    }
+      make_field_black();
+      FastLED.show();
+    };
   };
     
 };
+
+
+
+
+void setup(){
+
+
+
+};
+
+
+
+
+
+void loop(){
+
+
+
+
+
+}
+
