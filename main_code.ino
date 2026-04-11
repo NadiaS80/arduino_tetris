@@ -132,16 +132,21 @@ class Game{
     current_figure_angle = 0;
   };
   
-  
+  bool have_active_figure = false;
+  int figure_round = 0;
+  int speed_interval = 0;
+
   // сброс поля, отрисовка нового поля. Возвращает true, если прлисходит смена раунда. возвращаемое знвчение используется в классе RGB для отрисовки анимации смены раунда
-  bool start_round(){
-      bool result = false;
-      if (end_or_not() == END){
-        void_big_game_field();
-        start_figure();
-        result = true;
-      };
-      return result;
+  void start_round(){
+      //bool result = false;
+     // if (end_or_not() == END){
+    void_big_game_field();
+    start_figure();
+       // result = true;
+     // };
+     // return result;
+    figure_round = 0;
+    speed_interval = 0;
   };
   
   
@@ -156,7 +161,13 @@ class Game{
   // добавляет символы фигуры на поле. принимает индекс фигуры. берет символ по индексу из массива figure_simbol 
   void fix_figure_position(){
     for (int i = 0; i < 4; i++){
-      big_game_field[falling_figure[i][1]][falling_figure[i][0]] =  figure_simbol[current_figure_index];
+      big_game_field[falling_figure[i][1]][falling_figure[i][0]] = figure_simbol[current_figure_index];
+    };
+    figure_round += 1;
+    if (figure_round % 5 == 0){
+      if (speed_interval < 740){
+        speed_interval += 20;
+      };
     };
   };
   
@@ -184,15 +195,14 @@ class Game{
   };
   
   
-  enum End_State {END, NOT_END};
-  
-  End_State end_or_not(){
+  bool end_or_not(){
+    bool end = false;
     for (int i = 0; i < 4; i++){
       if (falling_figure[i][1] < 4){
-        return END;
+        end = true;
       };
     };
-    return NOT_END;
+    return end;
   };
   
   void combination_collapse(){
@@ -220,7 +230,6 @@ class Game{
   };
   
   
-    
   void figure_one_step_left(){
     bool can_go_left = true;
     for (int i = 0; i < 4; i++){
@@ -346,7 +355,7 @@ Game game;
 
   
 #include <FastLED.h>
-#define rgb_pin 9
+#define rgb_pin 8
 
 
 class RGB_matrix{
@@ -355,7 +364,7 @@ class RGB_matrix{
   CRGB leds[256];
 
   void init(){
-    FastLED.addLeds<WS2812, rgb_pin, GRB>(leds, 256); // rgb_pin объявлен в начале кода (номер 9)
+    FastLED.addLeds<WS2812, rgb_pin, GRB>(leds, 256); // rgb_pin объявлен в начале кода (номер 8)
     FastLED.setBrightness(11);
     FastLED.clear(true);
     FastLED.show();
@@ -421,8 +430,29 @@ class RGB_matrix{
         };
       };
     };
-    
-    
+    for (int u = 0; u < 4; u++){
+      char symbol = game.figure_simbol[game.current_figure_index];
+      if (game.falling_figure[u][1] < 4){
+          continue;
+      };
+      int leds_position = XY(4 + game.falling_figure[u][0], game.falling_figure[u][1] - 2);
+      if (symbol == 's'){
+        leds[leds_position] = CRGB::Yellow;
+      } else if (symbol == 't'){
+          leds[leds_position] = CRGB::Purple;
+      } else if (symbol == 'g'){
+          leds[leds_position] = CRGB::Blue;
+      } else if (symbol == 'l'){
+          leds[leds_position] = CRGB::Orange;
+      } else if (symbol == 'z'){
+          leds[leds_position] = CRGB::Red;
+      } else if (symbol == 'w'){
+          leds[leds_position] = CRGB::Green;
+      } else if (symbol == 'i'){
+          leds[leds_position] = CRGB::Aqua;
+      };
+      
+    };
     FastLED.show();
   };
   
@@ -512,23 +542,74 @@ class RGB_matrix{
 };
 
 
+#define Left 9
+#define Right 10
+#define Spin 11
 
+RGB_matrix matrix;
+Buttons button;
+
+unsigned long timer;
 
 void setup(){
-
-
-
+  pinMode(Left, INPUT);
+  pinMode(Right, INPUT);
+  pinMode(Spin, INPUT);
+  show.init();
+  show.border();
+  game.void_big_game_field();
+  randomSeed(analogRead(A1));
+  timer = millis();
 };
 
-
-
-
+int start_interval = 800;
 
 void loop(){
+  if (game.have_active_figure == false){
+    game.start_figure();
+    int random_figure_num = random(0, 7);
+    game.current_figure_index = random_figure_num;
+    game.init_figure_into_falling_figure(random_figure_num);
+    game.have_active_figure = true;
+  };
+  
 
+  int pin_left = digitalRead(Left);
+  int pin_right = digitalRead(Right);
+  int pin_spin = digitalRead(Spin);
 
+  if (button.left_button(pin_left) == true){
+    game.figure_one_step_left();
+    matrix.show_virtual_matrix();
+  };
 
+  if (button.right_button(pin_right) == true){
+    game.figure_one_step_right();
+    matrix.show_virtual_matrix();
+  };
+
+  if (button.spin_button(pin_spin) == true){
+    game.change_figure_angle();
+    matrix.show_virtual_matrix();
+  };
+
+  if (millis() - timer > start_interval - game.speed_interval){
+    timer = millis();
+    bool fixed = game.figure_one_step_down();
+    matrix.show_virtual_matrix();
+    if (fixed){
+      bool end_or_not = game.end_or_not();
+      if (end_or_not == false){
+        game.combination_collapse();
+        matrix.show_virtual_matrix();
+        game.have_active_figure = false;
+      } else if (end_or_not == true){
+        game.start_round();
+        game.have_active_figure = false;
+        matrix.end_animation();
+      };
+    };
+  };
 
 
 }
-
