@@ -31,7 +31,7 @@ class Game{
     {
     {{3, 2}, {3, 3}, {4, 3}, {5, 3}},
     // влево
-    {{4, 1}, {5, 2}, {3, 3}, {4, 3}},
+    {{4, 1}, {4, 2}, {3, 3}, {4, 3}},
     // вниз
     {{3, 2}, {4, 2}, {5, 2}, {5, 3}},
     // вправо
@@ -46,7 +46,7 @@ class Game{
     // влево
     {{3, 1}, {4, 1}, {4, 2}, {4, 3}},
     // вниз
-    {{3, 2}, {4, 2}, {5, 2}, {5, 3}},
+    {{3, 2}, {4, 2}, {5, 2}, {3, 3}},
     // вправо
     {{4, 1}, {4, 2}, {4, 3}, {5, 3}},
     },
@@ -135,6 +135,9 @@ class Game{
   bool have_active_figure = false;
   int figure_round = 0;
   int speed_interval = 0;
+  int random_current_figure_num = 0;
+  int random_next_figure_num = 0;
+
 
   // сброс поля, отрисовка нового поля. Возвращает true, если прлисходит смена раунда. возвращаемое знвчение используется в классе RGB для отрисовки анимации смены раунда
   void start_round(){
@@ -347,6 +350,24 @@ class Buttons{
     return to_switch;
   }; 
   
+  int go_down_last = 0;
+  int go_down_current = 0;
+
+  bool go_down_button(bool electro){
+    bool to_switch = false;
+    if (electro){
+      go_down_current = electro;
+    } else {
+      go_down_current = 0;
+    };
+    if (go_down_current == 1 && go_down_last == 0){
+      to_switch = true;
+    };
+    go_down_last = go_down_current;
+    return to_switch;
+  };
+  
+
 };
 
 
@@ -355,7 +376,7 @@ Game game;
 
   
 #include <FastLED.h>
-#define rgb_pin 8
+#define rgb_pin 6
 
 
 class RGB_matrix{
@@ -453,20 +474,37 @@ class RGB_matrix{
       };
       
     };
+
+    char symbol_next_figure = game.figure_simbol[game.random_next_figure_num];
+    int leds_position = XY(15, 2);
+    if (symbol_next_figure == 's'){
+      leds[leds_position] = CRGB::Yellow;
+    } else if (symbol_next_figure == 't'){
+        leds[leds_position] = CRGB::Purple;
+    } else if (symbol_next_figure == 'g'){
+        leds[leds_position] = CRGB::Blue;
+    } else if (symbol_next_figure == 'l'){
+        leds[leds_position] = CRGB::Orange;
+    } else if (symbol_next_figure == 'z'){
+        leds[leds_position] = CRGB::Red;
+    } else if (symbol_next_figure == 'w'){
+        leds[leds_position] = CRGB::Green;
+    } else if (symbol_next_figure == 'i'){
+        leds[leds_position] = CRGB::Aqua;
+    };
+
     FastLED.show();
   };
   
-  // запускает финальную анимацию, если переданный аргумент из класса Game функции start_round == true
-  void end_animation(bool go_comand){
-    if (!go_comand){
-      return;
-    };
-    
-    CRGB blinks[256] = {};
-    for (int i = 0; i < 256; i++){
-        blinks[i] = leds[i];
-    };
-      
+  // запускает финальную анимацию
+  void end_animation(){
+    int one_led_position = XY(15, 2);
+    leds[one_led_position] = CRGB::Black;
+
+    //CRGB blinks[256] = {};
+    //for (int i = 0; i < 256; i++){
+    //    blinks[i] = leds[i];
+    //};
     
     auto make_field_black = [&](){
       for (int o = 0; o < 14; o++){
@@ -476,13 +514,14 @@ class RGB_matrix{
       };
     };
 
-    auto make_field_color = [&](){
-      for (int q = 0; q < 256; q++){
-        leds[q] = blinks[q];
-      };
-    };
+    //auto make_field_color = [&](){
+    //  for (int q = 0; q < 256; q++){
+    //    leds[q] = blinks[q];
+    //  };
+    //};
     
     auto chess_animation = [&](){
+
       for (int i = 0; i < 10; i++){
         if (i % 2 == 0){
           for (int o = 0; o < 14; o += 2){
@@ -497,7 +536,7 @@ class RGB_matrix{
       };
 
       FastLED.show();
-      delay(500);
+      delay(1500);
     
       for (int i = 0; i < 10; i++){
         if (i % 2 != 0){
@@ -516,35 +555,37 @@ class RGB_matrix{
     };
     
     for (int l = 0; l < 3; l++){
-      make_field_black();
-      FastLED.show();
-      delay(250);
-      make_field_color();
-      FastLED.show();
-      delay(250);
-      make_field_black();
-      FastLED.show();
-      delay(250);
-      make_field_color();
-      FastLED.show();
-      delay(250);
-      make_field_black();
-      FastLED.show();
-      delay(250);
+      //make_field_black();
+      //FastLED.show();
+      //delay(250);
+      //make_field_color();
+      //FastLED.show();
+      //delay(250);
+      //make_field_black();
+      //FastLED.show();
+      //delay(250);
+      //make_field_color();
+      //FastLED.show();
+      //delay(250);
+      //make_field_black();
+      //FastLED.show();
+      //delay(250);
       chess_animation();
       FastLED.show();
-      delay(300);
+      delay(800);
       make_field_black();
       FastLED.show();
+      delay(300);
     };
   };
     
 };
 
 
-#define Left 9
-#define Right 10
-#define Spin 11
+#define Left 8
+#define Right 9
+#define Spin 10
+#define Go_down 11
 
 RGB_matrix matrix;
 Buttons button;
@@ -555,8 +596,9 @@ void setup(){
   pinMode(Left, INPUT);
   pinMode(Right, INPUT);
   pinMode(Spin, INPUT);
-  show.init();
-  show.border();
+  pinMode(Go_down, INPUT);
+  matrix.init();
+  matrix.border();
   game.void_big_game_field();
   randomSeed(analogRead(A1));
   timer = millis();
@@ -567,9 +609,18 @@ int start_interval = 800;
 void loop(){
   if (game.have_active_figure == false){
     game.start_figure();
-    int random_figure_num = random(0, 7);
-    game.current_figure_index = random_figure_num;
-    game.init_figure_into_falling_figure(random_figure_num);
+    if (game.figure_round == 0){
+      game.random_current_figure_num = random(0, 7);
+      game.current_figure_index = game.random_current_figure_num;
+      game.init_figure_into_falling_figure(game.random_current_figure_num);
+      game.random_next_figure_num = random(0, 7);
+    } else if (game.figure_round != 0){
+      game.random_current_figure_num = game.random_next_figure_num;
+      game.random_next_figure_num = random(0, 7);
+      game.current_figure_index = game.random_current_figure_num;
+      game.init_figure_into_falling_figure(game.random_current_figure_num);
+    };
+    matrix.show_virtual_matrix();
     game.have_active_figure = true;
   };
   
@@ -577,6 +628,7 @@ void loop(){
   int pin_left = digitalRead(Left);
   int pin_right = digitalRead(Right);
   int pin_spin = digitalRead(Spin);
+  int pin_go_down = digitalRead(Go_down);
 
   if (button.left_button(pin_left) == true){
     game.figure_one_step_left();
@@ -593,8 +645,7 @@ void loop(){
     matrix.show_virtual_matrix();
   };
 
-  if (millis() - timer > start_interval - game.speed_interval){
-    timer = millis();
+  auto using_go_down_func = [&](){
     bool fixed = game.figure_one_step_down();
     matrix.show_virtual_matrix();
     if (fixed){
@@ -604,12 +655,21 @@ void loop(){
         matrix.show_virtual_matrix();
         game.have_active_figure = false;
       } else if (end_or_not == true){
+        matrix.end_animation();
         game.start_round();
         game.have_active_figure = false;
-        matrix.end_animation();
       };
     };
   };
 
+
+  if (millis() - timer > start_interval - game.speed_interval){
+    timer = millis();
+    using_go_down_func();
+  };
+
+  if (button.go_down_button(pin_go_down) == true){
+    using_go_down_func();
+  };
 
 }
