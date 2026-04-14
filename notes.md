@@ -22,3 +22,27 @@ In fact, moving figures horizontally is easy, because there are cells, and the f
 ``
 In a couple of days, through the IDE on my phone, whenever I had free time, I implemented the virtual game class for Tetris. Everything except figure rotations. I am genuinely surprised, considering that on my previous tic-tac-toe project I spent a really long time. On the other hand, in that previous project I was working with C++ classes for the first time, working with a matrix for the first time, and with a joystick for the first time. And now there is a clear understanding. But this project has to be another step upward, toward the more complex projects that I set for myself. More specifically, in this project I use a real-time clock module. All that is left is to implement figure rotation, I think I will do it through a separate class for figures, then the RGB class, where there are only 4 functions, namely init(), end_game_animation(), start_game_animation(), and draw_actual_field(). And after that, call the commands in the correct sequence inside loop().
 ``
+
+
+---
+
+
+### 15.03.2026
+
+``
+It was difficult to think through the logic of the turns. Initially, the indexes of the shapes (along with its rotations) were stored in an imaginary 4x4 field, relative to which the shapes were drawn in a large field. It has become much more difficult with turns, as there is an offset and a border check. And the rotation inside a separate matrix becomes more difficult. I came to the conclusion that in this situation it would be much more correct to write the values already in the field into the index matrix. And then just add the position of the shape to them, thereby changing one shape to another when turning.
+``
+
+
+---
+
+
+### 14.04.2026
+
+``
+To be honest, I've been putting off completing the project for a long time. I had written classes for playing, drawing, and reading buttons. That is, the Tetris engine has been fully implemented in one form or another. But at some point, the chain of thoughts that had been going on for days in my subconscious broke off and I just looked at the code that I had written myself as if it were something alien. It's a very strange brain mode, to be honest. After a month off from the project, which I wrote in a week, I assembled all the previously written functions into loop logic. And so, having allocated a little time for several evenings in a row, falling asleep at the computer, Tetris is ready. The only thing I encountered was the limitation of the Arduino UNO's SRAM memory, which temporarily caused me to disable the beautiful animation. 
+``
+
+``
+After completing the project, and finally playing Tetris, I realized that I had created a wonderful toy for myself. I decided to buy an Arduino MEGA, which will be necessary for my subsequent projects and with which I will be able to display the animation that I originally prescribed, which requires extended memory for the local array variable `CRGB blinks[256]". And I realized that I want to play this Tetris game on a regular basis. Now there is an inconvenience with the fact that I use a solderless breadboard, and all my components are solderless. Because of this, some components fall off during the game and the game process may be disrupted. The solution is simple. To play on a permanent basis, buy an Arduino NANO (the beautiful animation of the end of the round does not matter to me) and solder the components to it. The contacts that connect to the RGB matrix can be connected via separate contacts (the contacts themselves are soldered, but they are designed for a solder-free connection).
+``
