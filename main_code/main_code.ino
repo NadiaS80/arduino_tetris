@@ -376,7 +376,12 @@ Game game;
 
   
 #include <FastLED.h>
-#define rgb_pin 6
+
+// uno
+//#define rgb_pin 6
+
+// nano
+#define rgb_pin 12
 
 
 class RGB_matrix{
@@ -385,7 +390,7 @@ class RGB_matrix{
   CRGB leds[256];
 
   void init(){
-    FastLED.addLeds<WS2812, rgb_pin, GRB>(leds, 256); // rgb_pin объявлен в начале кода (номер 8)
+    FastLED.addLeds<WS2812, rgb_pin, GRB>(leds, 256); // rgb_pin объявлен в начале кода 
     FastLED.setBrightness(11);
     FastLED.clear(true);
     FastLED.show();
@@ -501,6 +506,7 @@ class RGB_matrix{
     int one_led_position = XY(15, 2);
     leds[one_led_position] = CRGB::Black;
 
+    // mega
     //CRGB blinks[256] = {};
     //for (int i = 0; i < 256; i++){
     //    blinks[i] = leds[i];
@@ -514,6 +520,7 @@ class RGB_matrix{
       };
     };
 
+    // mega
     //auto make_field_color = [&](){
     //  for (int q = 0; q < 256; q++){
     //    leds[q] = blinks[q];
@@ -555,6 +562,7 @@ class RGB_matrix{
     };
     
     for (int l = 0; l < 3; l++){
+      // mega
       //make_field_black();
       //FastLED.show();
       //delay(250);
@@ -581,11 +589,18 @@ class RGB_matrix{
     
 };
 
+// uno
+//#define Left 8
+//#define Right 9
+//#define Spin 10
+//#define Go_down 11
 
-#define Left 8
-#define Right 9
-#define Spin 10
-#define Go_down 11
+// nano
+#define Left 10
+#define Right 4
+#define Spin 8
+#define Go_down 6
+
 
 RGB_matrix matrix;
 Buttons button;

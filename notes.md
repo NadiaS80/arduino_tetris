@@ -46,3 +46,13 @@ To be honest, I've been putting off completing the project for a long time. I ha
 ``
 After completing the project, and finally playing Tetris, I realized that I had created a wonderful toy for myself. I decided to buy an Arduino MEGA, which will be necessary for my subsequent projects and with which I will be able to display the animation that I originally prescribed, which requires extended memory for the local array variable 'CRGB blinks[256]'. And I realized that I want to play this Tetris game on a regular basis. Now there is an inconvenience with the fact that I use a solderless breadboard, and all my components are solderless. Because of this, some components fall off during the game and the game process may be disrupted. The solution is simple. To play on a permanent basis, buy an Arduino NANO (the beautiful animation of the end of the round does not matter to me) and solder the components to it. The contacts that connect to the RGB matrix can be connected via separate contacts (the contacts themselves are soldered, but they are designed for a solder-free connection).
 ``
+
+
+---
+
+
+### 19.04.2026
+
+``
+Finally, I finished Tetris. I learned how to solder. Wow! Now I can solder. It didn't work out the first time, because of the cheap solder and incorrect temperature settings, I lost 3 stingers, which oxidized and stopped taking solder. After buying a good solder with flux, soldering went much easier. I drew a diagram (as a result, not all pins and connections correspond to the drawn diagram, since the most successful connections were selected during the soldering process), then roughly decomposed the parts and transferred everything to the breadboard. I haven't ordered Artuino Mega yet, but we'll see, in any case, it's needed exclusively for beautiful animation. The basic logic works on both Uno and Nano. I am happy and satisfied with myself.
+``
